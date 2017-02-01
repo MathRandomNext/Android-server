@@ -53,27 +53,22 @@ module.exports = () => {
             })
         },
         loginUser(req, res, next) {
-
-            console.log("REQUEST BODY");
-            console.log(req.body);
             User.findOne({ username: req.body.username }, (err, user) => {
                 if (err) {
                     throw err;
                 }
 
                 if (!user) {
-                    console.log("here in !user");
                     res.json("{\"error\": \"Invalid username or password.\"}");
                 } else {
                     if (user.isValidPassword(req.body.password)) {
-                        console.log("here in login");
                         let token = 'JWT ' + jwt.encode(user, config.jwtSecret);
                         let result = {
                             token,
                             username: user.username,
                             _id: user._id
                         };
-
+                        console.log("return JSON");
                         return res.json({ result });
                     }
 
