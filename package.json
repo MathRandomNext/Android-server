@@ -9,10 +9,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Team-Little-Kitten/Course-Project-Server.git"
+    "url": "git+https://github.com/MathRandomNext/Android-server.git"
   },
-  "author": "team-little-kitten",
-  "homepage": "https://github.com/Team-Little-Kitten/Course-Project#readme",
+  "author": "team-math-random",
   "dependencies": {
     "body-parser": "1.15.2",
     "chai": "^3.5.0",
