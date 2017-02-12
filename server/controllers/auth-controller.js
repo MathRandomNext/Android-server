@@ -34,15 +34,17 @@ module.exports = () => {
                     return res.json("{\"error\": \"Username already exists\"}");                
                 }
                 
-                User.create(body, (error, result) => {
+                User.create(body, (error, newUser) => {
                     if (error) {
                         return res.json(error);
                     }
 
-                    return res.json({
-                        username: result.username,
-                        _id: result._id
-                    });
+                    let result = {
+                            username: newUser.username,
+                            _id: newUser._id
+                    };
+
+                    return res.json({ result });
                 });
             })
         },
