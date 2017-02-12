@@ -31,7 +31,7 @@ module.exports = () => {
                 }
 
                 if (user) {
-                    return res.json({ message: `User with username "${body.username}" already exists.` });                
+                    return res.json("{\"error\": \"Username already exists\"}");                
                 }
                 
                 User.create(body, (error, result) => {
