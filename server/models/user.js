@@ -3,7 +3,6 @@ const encryption = require("../utils/encryption");
 
 let userSchema = mongoose.Schema({
     username: { type: String, unique: true },
-    salt: { type: String, required: true },
     passHash: { type: String, required: true },
 });
 

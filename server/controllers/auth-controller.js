@@ -34,11 +34,7 @@ module.exports = () => {
                     res.json({ message: `User with username "${body.username}" already exists.` });
                     return;
                 }
-
-                let salt = encryption.getSalt();
-                let passHash = encryption.getPassHash(salt, body.password);
-                body.salt = salt;
-                body.passHash = passHash;
+                
                 User.create(body, (error, result) => {
                     if (error) {
                         res.json(error);
@@ -53,7 +49,7 @@ module.exports = () => {
             })
         },
         loginUser(req, res, next) {
-            User.findOne({ username: req.body.username }, (err, user) => {
+            User.findOne({ username: req.body.username, passHash: req.body.passHash }, (err, user) => {
                 if (err) {
                     throw err;
                 }
@@ -61,14 +57,12 @@ module.exports = () => {
                 if (!user) {
                     res.json("{\"error\": \"Invalid username or password.\"}");
                 } else {
-                    if (user.isValidPassword(req.body.password)) {
-                        let token = 'JWT ' + jwt.encode(user, config.jwtSecret);
+                    if (user) {
                         let result = {
-                            token,
                             username: user.username,
                             _id: user._id
                         };
-                        console.log("return JSON");
+
                         return res.json({ result });
                     }
 
@@ -79,31 +73,6 @@ module.exports = () => {
         logoutUser(req, res) {
             req.logout();
             res.sendStatus(200);
-        },
-        verifyLogin(req, res) {
-            var token = getToken(req.headers);
-            if (token) {
-                let decoded = jwt.decode(token, config.jwtSecret);
-                User.findOne({
-                    username: decoded.username
-                }, function (err, user) {
-                    if (err) throw err;
-
-                    if (!user) {
-                        return res.json({ success: false, message: 'User not found.' });
-                    } else {
-                        res.json({
-                            success: true, user: {
-                                token,
-                                username: user.username,
-                                _id: user._id
-                            }
-                        });
-                    }
-                });
-            } else {
-                return res.json({ success: false, message: "No token provided" });
-            }
         }
     };
 };
