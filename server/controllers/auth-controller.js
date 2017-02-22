@@ -27,25 +27,35 @@ module.exports = () => {
             User.findOne({ username: body.username }, (err, user) => {
                 if (err) {
                     res.json(err);
+                    res.status(404);
                     return;
                 }
 
                 if (user) {
-                    return res.json("{\"error\": \"Username already exists\"}");                
-                }
-                
-                User.create(body, (error, newUser) => {
-                    if (error) {
-                        return res.json(error);
+                    let error = {
+                        errorMessage: "Username already exists."
                     }
+                    res.json({ error });
+                    res.status(404);              
+                } else {
+                    User.create(body, (error, newUser) => {
+                        if (error) {
+                            let error = {
+                                errorMessage: "Enable to parse arguments."
+                            }
+                            res.json({ error });
+                            res.status(404);
+                        } else {
+                            let result = {
+                                username: newUser.username,
+                                _id: newUser._id
+                            };
 
-                    let result = {
-                            username: newUser.username,
-                            _id: newUser._id
-                    };
-
-                    return res.json({ result });
-                });
+                            res.json({ result });
+                            res.status(200);
+                        }                      
+                    });
+                }
             })
         },
         loginUser(req, res, next) {
@@ -58,21 +68,24 @@ module.exports = () => {
                     let error = {
                         errorMessage: "Invalid username or password."
                     }
-
-                    return res.sendStatus(404).json({ error });
+                    
+                    res.json({ error });
+                    res.status(404);
+                    
                 } else {
                     let result = {
                         username: user.username,
                         _id: user._id
                     };
-
-                    return res.sendStatus(200).json({ result });
+                    
+                    res.json({ result });
+                    res.status(200);
                 }
             });
         },
         logoutUser(req, res) {
             req.logout();
-            res.sendStatus(200);
+            res.status(200);
         }
     };
 };
