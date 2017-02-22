@@ -59,7 +59,7 @@ module.exports = () => {
                         errorMessage: "Invalid username or password."
                     }
 
-                    return res.sentStatus(404).json({ error });
+                    return res.sendStatus(404).json({ error });
                 } else {
                     let result = {
                         username: user.username,
