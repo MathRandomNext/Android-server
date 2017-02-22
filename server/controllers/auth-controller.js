@@ -55,18 +55,18 @@ module.exports = () => {
                 }
 
                 if (!user) {
-                    res.json("{\"error\": \"Invalid username or password.\"}");
-                } else {
-                    if (user) {
-                        let result = {
-                            username: user.username,
-                            _id: user._id
-                        };
-
-                        return res.json({ result });
+                    let error = {
+                        errorMessage: "Invalid username or password."
                     }
 
-                    return res.json("{\"error\": \"Invalid username or password.\"}");
+                    return res.sentStatus(404).json({ error });
+                } else {
+                    let result = {
+                        username: user.username,
+                        _id: user._id
+                    };
+
+                    return res.sendStatus(200).json({ result });
                 }
             });
         },
