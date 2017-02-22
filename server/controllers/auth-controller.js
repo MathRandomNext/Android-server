@@ -26,24 +26,18 @@ module.exports = () => {
 
             User.findOne({ username: body.username }, (err, user) => {
                 if (err) {
-                    res.json(err);
+                    res.json({errorMessage: "Unknown"});
                     res.status(404);
                     return;
                 }
 
                 if (user) {
-                    let error = {
-                        errorMessage: "Username already exists."
-                    }
-                    res.json({ error });
+                    res.json({ errorMessage: "Username already exists." });
                     res.status(404);              
                 } else {
                     User.create(body, (error, newUser) => {
                         if (error) {
-                            let error = {
-                                errorMessage: "Enable to parse arguments."
-                            }
-                            res.json({ error });
+                            res.json({ errorMessage: "Enable to parse arguments." });
                             res.status(404);
                         } else {
                             let result = {
@@ -65,11 +59,7 @@ module.exports = () => {
                 }
 
                 if (!user) {
-                    let error = {
-                        errorMessage: "Invalid username or password."
-                    }
-                    
-                    res.json({ error });
+                    res.json({ errorMessage: "Invalid username or password." });
                     res.status(404);
                     
                 } else {
