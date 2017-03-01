@@ -1,22 +1,18 @@
 const mongoose = require("mongoose");
-const encryption = require("../utils/encryption");
 
 let userSchema = mongoose.Schema({
     username: { type: String, unique: true },
     passHash: { type: String, required: true },
+    favorites:  [{
+        googleId: { type: String, required: true },
+        name: { type: String, required: true },
+        comments:  [{
+            author: String,
+            text: String,
+            postDate: Date
+        }]
+    }]
 });
-
-userSchema.methods = {
-    isValidPassword(password) {
-        // let realPassHash = this.passHash;
-        // let currentPassHash = encryption.getPassHash(this.salt, password);
-        // let isValid = currentPassHash === realPassHash;
-
-        //return isValid;
-
-        return true;
-    }
-};
 
 let User = mongoose.model("user", userSchema);
 module.exports = User;
