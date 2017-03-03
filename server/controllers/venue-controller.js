@@ -12,15 +12,18 @@ module.exports = () => {
         let body = req.body;
             Venue.findOne({ googleId: body.googleId }, (err, venue) => {
                 if (err) {
-                    console.log("venue not found error");
                     res.statusMessage = "Unknown venue";
                     res.sendStatus(404);
                     return;
                 }
 
-                let venueCreatedSuccessfully = true;
+                let commentForImport = {
+                    author: body.author,
+                    text: body.text,
+                    postDate: body.postDate
+                };
 
-                if(!venue) {
+                if(!venue) { 
                     let newVenueForImport = {
                         googleId: body.googleId,
                         venueName: body.venueName,
@@ -32,44 +35,49 @@ module.exports = () => {
                         if (error) {
                             res.statusMessage = "Enable to parse arguments.";
                             res.sendStatus(404).end();
-                            venueCreatedSuccessfully = false;
+                            return;
+                        } 
+
+                        Comment.create(commentForImport, (error, newComment) => {
+                            if (error) {
+                                res.statusMessage = "Enable to parse arguments.";
+                                res.sendStatus(404).end();
+                            } else {
+                                Venue.update(newVenue, {$push: {"comments": newComment }}, function(err, reponse) {
+                                    if (err) {
+                                        res.statusMessage = "Error";
+                                        res.sendStatus(404).end();
+                                    } else {
+                                        res.statusMessage = "Comment added successfully";
+                                        res.sendStatus(200).end();
+                                    }
+                                });
+                            }                      
+                        });
+                    });
+                } else {
+                    Comment.create(commentForImport, (error, newComment) => {
+                        if (error) {
+                            res.statusMessage = "Enable to parse arguments.";
+                            res.sendStatus(404).end();
                         } else {
-                            venue = newVenue;
+                            Venue.update(venue, {$push: {"comments": newComment }}, function(err, reponse) {
+                                if (err) {
+                                    res.statusMessage = "Error";
+                                    res.sendStatus(404).end();
+                                } else {
+                                    res.statusMessage = "Comment added successfully";
+                                    res.sendStatus(200).end();
+                                }
+                            });
                         }                      
                     });
                 }
-
-                if(!venueCreatedSuccessfully){
-                    return;
-                }
-
-                let commentForImport = {
-                    author: body.author,
-                    text: body.text,
-                    postDate: body.postDate
-                }
-                
-                Comment.create(commentForImport, (error, newComment) => {
-                    if (error) {
-                        res.statusMessage = "Enable to parse arguments.";
-                        res.sendStatus(404).end();
-                    } else {
-                        Venue.update(venue, {$push: {"comments": newComment }}, function(err, reponse) {
-                            if (err) {
-                                res.statusMessage = "Error";
-                                res.sendStatus(404).end();
-                            } else {
-                                res.statusMessage = "Comment added successfully";
-                                res.sendStatus(200).end();
-                            }
-                        });
-                    }                      
-                });
             })
         },
         getVenue(req, res, next) {
             let googleId = req.params.googleId;
-            console.log(googleId);
+
             Venue.findOne({ googleId: googleId }, (err, venue) => {
                 if (err) {
                     res.statusMessage = "Unknown venue";
