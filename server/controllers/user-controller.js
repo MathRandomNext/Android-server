@@ -33,60 +33,61 @@ module.exports = () => {
                 }
                 
                 user = foundUser;
-                console.log(user)
-            });
 
-            Venue.findOne({ googleId: body.googleId }, (err, foundVenue) => {
-                if (err) {
-                    res.statusMessage = "Unknown venue";
-                    res.sendStatus(404);
-                    return;
-                }
-
-                if(!foundVenue) {
-                    let newVenueForImport = {
-                        googleId: body.googleId,
-                        venueName: body.venueName,
-                        venueAddress: body.venueAddress,
-                        comments:[]
+                Venue.findOne({ googleId: body.googleId }, (err, foundVenue) => {
+                    if (err) {
+                        res.statusMessage = "Unknown venue";
+                        res.sendStatus(404);
+                        return;
                     }
 
-                    Venue.create(newVenueForImport, (error, newVenue) => {
-                        if (error) {
-                            res.statusMessage = "Enable to parse arguments.";
-                            res.sendStatus(404).end();
-                        } else {
-                            venue = newVenue;
-                        }                      
-                    });
-                } else {
-                    venue = foundVenue;
-                }
-            });
-            
-            if(!user){
-                console.log("Something wrong with user!");
-                res.statusMessage = "Something wrong!";
-                res.sendStatus(404);
-                return;
-            }
+                    if(!foundVenue) {
+                        console.log("not found venue");
+                        let newVenueForImport = {
+                            googleId: body.googleId,
+                            venueName: body.venueName,
+                            venueAddress: body.venueAddress,
+                            comments:[]
+                        }
 
-            if(!venue){
-                console.log("Something wrong with venue!");
-                res.statusMessage = "Something wrong!";
-                res.sendStatus(404);
-                return;
-            }
+                        Venue.create(newVenueForImport, (error, newVenue) => { 
+                            if (error) {
+                                res.statusMessage = "Enable to parse arguments.";
+                                res.sendStatus(404).end();
+                            } else {
+                                console.log("venue created");
+                                venue = newVenue;
+                                User.update(user, {$push: {"favorites": venue }}, function(err, response) {
+                                    if (err) {
+                                        res.statusMessage = "Error";
+                                        res.sendStatus(404).end();
+                                    } else {
+                                        console.log("fav imported");
+                                        res.statusMessage = "Venue added successfully to user";
+                                        res.sendStatus(200).end();
+                                    }
+                                });
+                            }                      
+                        });
+                    } else {
+                        console.log("found venue");
+                        venue = foundVenue;
+                        console.log(venue);
+                        User.update(user, {$push: {"favorites": venue }}, function(err, response) {
+                            if (err) {
+                                res.statusMessage = "Error";
+                                res.sendStatus(404).end();
+                            } else {
+                                console.log("fav imported");
+                                res.statusMessage = "Venue added successfully to user";
+                                res.sendStatus(200).end();
+                            }
+                        });
+                    }
+                });
 
-            User.update(venue, {$push: {"favorites": venue }}, function(err, reponse) {
-                if (err) {
-                    res.statusMessage = "Error";
-                    res.sendStatus(404).end();
-                } else {
-                    res.statusMessage = "Venue added successfully to user";
-                    res.sendStatus(200).end();
-                }
             });
+
         }
     };
 };

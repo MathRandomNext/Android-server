@@ -6,12 +6,7 @@ let userSchema = mongoose.Schema({
     favorites:  [{
         googleId: { type: String, required: true },
         venueName: { type: String, required: true },
-        venueAddress: { type: String, required: true },
-        comments:  [{
-            author: String,
-            text: String,
-            postDate: Date
-        }]
+        venueAddress: { type: String, required: true }
     }]
 });
 
