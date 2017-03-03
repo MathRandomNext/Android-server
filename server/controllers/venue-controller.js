@@ -57,8 +57,10 @@ module.exports = () => {
                     } else {
                         Venue.update(venue, {$push: {"comments": newComment }}, function(err, reponse) {
                             if (err) {
+                                res.statusMessage = "Error";
                                 res.sendStatus(404).end();
                             } else {
+                                res.statusMessage = "Comment added successfully";
                                 res.sendStatus(200).end();
                             }
                         });
