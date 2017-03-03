@@ -5,7 +5,8 @@ let userSchema = mongoose.Schema({
     passHash: { type: String, required: true },
     favorites:  [{
         googleId: { type: String, required: true },
-        name: { type: String, required: true },
+        venueName: { type: String, required: true },
+        venueAddress: { type: String, required: true },
         comments:  [{
             author: String,
             text: String,
