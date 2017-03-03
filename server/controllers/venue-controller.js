@@ -68,9 +68,9 @@ module.exports = () => {
             })
         },
         getVenue(req, res, next) {
-            let body = req.body;
-
-            Venue.findOne({ googleId: body.googleId }, (err, venue) => {
+            let googleId = req.params.googleId;
+            console.log(googleId);
+            Venue.findOne({ googleId: googleId }, (err, venue) => {
                 if (err) {
                     res.statusMessage = "Unknown venue";
                     res.sendStatus(400).end();
