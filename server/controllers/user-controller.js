@@ -33,7 +33,20 @@ module.exports = () => {
                 }
                 
                 user = foundUser;
+                let isUnique = true;
+                for(let i = 0; i < user.favorites.length; i += 1){
+                    if(body.googleId === user.favorites[i].googleId) {
+                        isUnique = false;
+                        break;
+                    }
+                }
 
+                if(!isUnique){
+                    res.statusMessage = "Venue already added";
+                    res.sendStatus(200);
+                    return;
+                }
+                
                 Venue.findOne({ googleId: body.googleId }, (err, foundVenue) => {
                     if (err) {
                         res.statusMessage = "Unknown venue";
@@ -42,7 +55,6 @@ module.exports = () => {
                     }
 
                     if(!foundVenue) {
-                        console.log("not found venue");
                         let newVenueForImport = {
                             googleId: body.googleId,
                             venueName: body.venueName,
@@ -55,14 +67,12 @@ module.exports = () => {
                                 res.statusMessage = "Enable to parse arguments.";
                                 res.sendStatus(404).end();
                             } else {
-                                console.log("venue created");
                                 venue = newVenue;
                                 User.update(user, {$push: {"favorites": venue }}, function(err, response) {
                                     if (err) {
                                         res.statusMessage = "Error";
                                         res.sendStatus(404).end();
                                     } else {
-                                        console.log("fav imported");
                                         res.statusMessage = "Venue added successfully to user";
                                         res.sendStatus(200).end();
                                     }
@@ -70,24 +80,19 @@ module.exports = () => {
                             }                      
                         });
                     } else {
-                        console.log("found venue");
                         venue = foundVenue;
-                        console.log(venue);
                         User.update(user, {$push: {"favorites": venue }}, function(err, response) {
                             if (err) {
                                 res.statusMessage = "Error";
                                 res.sendStatus(404).end();
                             } else {
-                                console.log("fav imported");
                                 res.statusMessage = "Venue added successfully to user";
                                 res.sendStatus(200).end();
                             }
                         });
                     }
                 });
-
             });
-
         }
     };
 };

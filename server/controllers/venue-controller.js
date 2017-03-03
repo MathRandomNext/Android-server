@@ -43,6 +43,7 @@ module.exports = () => {
                                 res.statusMessage = "Enable to parse arguments.";
                                 res.sendStatus(404).end();
                             } else {
+                                
                                 Venue.update(newVenue, {$push: {"comments": newComment }}, function(err, reponse) {
                                     if (err) {
                                         res.statusMessage = "Error";
