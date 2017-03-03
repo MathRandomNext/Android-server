@@ -25,6 +25,7 @@ module.exports = () => {
                     let newVenueForImport = {
                         googleId: body.googleId,
                         venueName: body.venueName,
+                        venueAddress: body.venueAddress,
                         comments:[]
                     }
 
