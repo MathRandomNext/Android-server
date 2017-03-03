@@ -10,7 +10,6 @@ module.exports = () => {
     return {
         postComment(req, res) {
         let body = req.body;
-
             Venue.findOne({ googleId: body.googleId }, (err, venue) => {
                 if (err) {
                     console.log("venue not found error");
