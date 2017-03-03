@@ -90,6 +90,40 @@ module.exports = () => {
 
                 res.json({ result });
             });
-        }
+        },
+        getVenueToUser(req, res, next) {
+            let googleId = req.params.googleId;
+            let username = req.params.username;
+
+            User.findOne({ username: username }, (err, user) => {
+                if (err) {
+                    res.statusMessage = "Unknown user";
+                    res.sendStatus(400).end();
+                    return;
+                }
+
+                if(!user) {
+                    res.statusMessage = "Unknown user";
+                    res.sendStatus(400).end();
+                } else {
+                    let isSavedToUser = false;
+
+                    for(let i = 0; i < user.favorites.length; i += 1) {
+                        if(googleId === user.favorites[i].googleId) {
+                            isSavedToUser = true;
+                            break;
+                        }
+                    }
+
+                    
+                    let result = { 
+                        isSavedToUser: isSavedToUser 
+                    };
+
+                    res.json({ result });
+                }
+            });
+        },
+
     };
 };
