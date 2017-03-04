@@ -33,17 +33,16 @@ module.exports = () => {
 
                     Venue.create(newVenueForImport, (error, newVenue) => {
                         if (error) {
-                            res.statusMessage = "Enable to parse arguments.";
+                            res.statusMessage = "Enable to parse arguments when creating new venue for the comment";
                             res.sendStatus(404).end();
                             return;
                         } 
 
                         Comment.create(commentForImport, (error, newComment) => {
                             if (error) {
-                                res.statusMessage = "Enable to parse arguments.";
+                                res.statusMessage = "Enable to parse arguments when creating new comment after new venue is created";
                                 res.sendStatus(404).end();
                             } else {
-                                
                                 Venue.update(newVenue, {$push: {"comments": newComment }}, function(err, reponse) {
                                     if (err) {
                                         res.statusMessage = "Error";
@@ -59,7 +58,7 @@ module.exports = () => {
                 } else {
                     Comment.create(commentForImport, (error, newComment) => {
                         if (error) {
-                            res.statusMessage = "Enable to parse arguments.";
+                            res.statusMessage = "Enable to parse arguments when creating comment for existing venue";
                             res.sendStatus(404).end();
                         } else {
                             Venue.update(venue, {$push: {"comments": newComment }}, function(err, response) {
