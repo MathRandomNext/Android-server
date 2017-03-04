@@ -93,6 +93,50 @@ module.exports = () => {
                     }
                 });
             });
+        },
+        removeVenueFromUser(req, res) {
+            let body = req.body;
+            let user;
+            let venue;
+            console.log(body);
+            User.findOne({ username: body.username }, (err, foundUser) => {
+                if (err) {
+                    res.statusMessage = "Unknown user";
+                    res.sendStatus(400).end();
+                    return;
+                }
+                
+                user = foundUser;
+                
+                Venue.findOne({ googleId: body.googleId }, (err, foundVenue) => {
+                    if (err) {
+                        res.statusMessage = "Unknown venue";
+                        res.sendStatus(404);
+                        return;
+                    }
+
+                    if(!foundVenue) {
+                        res.statusMessage = "Unknown venue";
+                        res.sendStatus(404);
+                        return;
+                    } else {
+                        venue = {
+                            googleId: foundVenue.googleId,
+                            venueName: foundVenue.venueName,
+                            venueAddress: foundVenue.venueAddress
+                        };
+                        User.update(user, {$pull: {"favorites": venue }}, function(err, response) {
+                            if (err) {
+                                res.statusMessage = "Error";
+                                res.sendStatus(404).end();
+                            } else {
+                                res.statusMessage = "Venue removed successfully from user";
+                                res.sendStatus(200).end();
+                            }
+                        });
+                    }
+                });
+            });
         }
     };
 };
