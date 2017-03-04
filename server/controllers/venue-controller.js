@@ -91,7 +91,7 @@ module.exports = () => {
                 res.json({ result });
             });
         },
-        getVenueToUser(req, res, next) {
+        isVenueSavedToUser(req, res, next) {
             let googleId = req.params.googleId;
             let username = req.params.username;
 
