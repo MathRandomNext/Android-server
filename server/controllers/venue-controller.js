@@ -117,7 +117,7 @@ module.exports = () => {
 
                     
                     let result = { 
-                        isSavedToUser: isSavedToUser 
+                        isSavedToUser
                     };
 
                     res.json({ result });
