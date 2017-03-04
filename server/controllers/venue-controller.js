@@ -102,26 +102,22 @@ module.exports = () => {
                     return;
                 }
 
-                if(!user) {
-                    res.statusMessage = "Unknown user";
-                    res.sendStatus(400).end();
-                } else {
-                    let isSavedToUser = false;
-
+                let isSavedToUser = false;
+                if(user) {
                     for(let i = 0; i < user.favorites.length; i += 1) {
                         if(googleId === user.favorites[i].googleId) {
                             isSavedToUser = true;
                             break;
                         }
                     }
-
-                    
-                    let result = { 
-                        isSavedToUser
-                    };
-
-                    res.json({ result });
                 }
+                
+                let result = { 
+                    isSavedToUser
+                };
+
+                res.json({ result });
+                
             });
         },
 
