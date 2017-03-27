@@ -38,7 +38,7 @@ module.exports = () => {
         loginUser(req, res, next) {
             User.findOne({ username: req.body.username, passHash: req.body.passHash }, (err, user) => {
                 if (err) {
-                    res.statusMessage = "Unknown";
+                    res.statusMessage = err.stack;
                     res.sendStatus(400).end();
                     return;
                 }
